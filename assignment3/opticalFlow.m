@@ -1,4 +1,4 @@
-function [plot] = opticalFlow(frame1, frame2, regionSize)
+function [Vx, Vy] = opticalFlow(frame1, frame2, regionSize)
     
     [m, n] = size(frame1);
     gridSizeX = m / regionSize;
@@ -31,12 +31,6 @@ function [plot] = opticalFlow(frame1, frame2, regionSize)
             Vy(i,j) = v(2);
         end
     end
-
-    hold on
-    X = 1:regionSize:m;
-    Y = 1:regionSize:n;
-    plot = quiver(X, Y, Vx, Vy);
-    hold off
 end
 
 
