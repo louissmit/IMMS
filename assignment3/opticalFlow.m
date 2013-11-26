@@ -1,25 +1,29 @@
-function opticalFlow(frame1, frame2, regionSize)
+function [plot] = opticalFlow(frame1, frame2, regionSize)
     
     [m, n] = size(frame1);
-    gridSize = n / regionSize;
+    gridSizeX = m / regionSize;
+    gridSizeY = n / regionSize;
+    
     
     % calculate difference and gradient
     diff = frame2 - frame1;
     [Gx,Gy] = imgradientxy(frame1);
 
     % divide gradients into regions
-    divider = repmat([regionSize], gridSize, 1);
-    Ix = mat2cell(Gx, divider, divider);
-    Iy = mat2cell(Gy, divider, divider);
-    It = mat2cell(diff, divider, divider);
+    dividerX = repmat([regionSize], gridSizeX, 1);
+    dividerY = repmat([regionSize], gridSizeY, 1);
+    
+    Ix = mat2cell(Gx, dividerX, dividerY);
+    Iy = mat2cell(Gy, dividerX, dividerY);
+    It = mat2cell(diff, dividerX, dividerY);
 
     A = zeros(regionSize * regionSize, 2);
-    Vx = zeros(gridSize, gridSize);
-    Vy = zeros(gridSize, gridSize);
+    Vx = zeros(gridSizeX, gridSizeY);
+    Vy = zeros(gridSizeX, gridSizeY);
     
     % calculate velocity   
-    for i = 1:gridSize
-        for j = 1:gridSize
+    for i = 1:gridSizeX
+        for j = 1:gridSizeY
             A = [reshape(cell2mat(Ix(i,j)), regionSize * regionSize, 1), reshape(cell2mat(Iy(i,j)), regionSize * regionSize, 1)];
             b = -reshape(cell2mat(It(i,j)),regionSize * regionSize,1);
             v = linsolve(A,b);
@@ -28,13 +32,10 @@ function opticalFlow(frame1, frame2, regionSize)
         end
     end
 
-    figure
-    imshow(frame1);
     hold on
-    X = 1:regionSize:n;
+    X = 1:regionSize:m;
     Y = 1:regionSize:n;
-    
-    quiver(X, Y, Vx, Vy);
+    plot = quiver(X, Y, Vx.', Vy.');
     hold off
 end
 
