@@ -12,7 +12,7 @@ M = zeros(m,n,length(imageNames));
 
 for i = 1:length(imageNames)
     frame2 = imread(fullfile(workingDir,imageNames{i}));
-    M(:,:,i) = getOpticalFlow(frame1, frame2, 12);
+    M(:,:,i) = opticalFlow(frame1, frame2, 12);
 %     writeVideo(outputVideo,img);
 end
 

@@ -1,4 +1,4 @@
-function getOpticalFlow(frame1, frame2, regionSize)
+function opticalFlow(frame1, frame2, regionSize)
     
     [m, n] = size(frame1);
     gridSize = n / regionSize;
