@@ -1,27 +1,34 @@
-function [new_x, new_y] = pointFlow(frame1, frame2, x, y, regionSize)
+function [dx, dy] = pointFlow(frame1, frame2, x, y, regionSize)
 %POINTFLOW Summary of this function goes here
 %   Detailed explanation goes here
     [m, n] = size(frame1);
-    
-    [Gx,Gy] = imgradientxy(frame1);
+    sigma = 0.7;
+
+    %  [Gx,Gy] = imgradientxy(frame1);
+    G = gaussian(sigma);
+    % create the gaussian filters using 1st order derivatives
+    Gx = gaussianDer(G,sigma);
+    Gy = transpose(Gx);
+    Gx = conv2(frame1,Gx,'same');
+    Gy = conv2(frame1,Gy,'same');
     
     h = regionSize/2;
     lh = h;
     rh = h;
     uh = h;
     dh = h;
-    if(x < h)
+    if(x <= h)
         lh = x-1;
-    elseif(x > (n - h))
-        rh = x - n;
+    elseif(x >= (n - h))
+        rh = abs(x - n);
     end
-    if(y < h)
+    if(y <= h)
         dh = y-1;
-    elseif(y > (m - h))
-        uh = y - m;
+    elseif(y >= (m - h))
+        uh = abs(y - m);
     end
     Ix = Gx((y-dh):(y+uh),(x-lh):(x+rh));
-    Iy = Gx((y-dh):(y+uh),(x-lh):(x+rh));
+    Iy = Gy((y-dh):(y+uh),(x-lh):(x+rh));
     It = frame2 - frame1;
     It = It((y-dh):(y+uh),(x-lh):(x+rh));
     
@@ -31,8 +38,9 @@ function [new_x, new_y] = pointFlow(frame1, frame2, x, y, regionSize)
     A = [reshape(Ix, vSize, 1), reshape(Iy, vSize, 1)];
     b = -reshape(It,vSize,1);
     v = linsolve(A,b);
-    new_x = v(1);
-    new_y = v(2);
+    k = 1;
+    dx = k * v(1);
+    dy = k * v(2);
 
 end
 
