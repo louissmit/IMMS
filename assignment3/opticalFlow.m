@@ -35,7 +35,7 @@ function [plot] = opticalFlow(frame1, frame2, regionSize)
     hold on
     X = 1:regionSize:m;
     Y = 1:regionSize:n;
-    plot = quiver(X, Y, Vx.', Vy.');
+    plot = quiver(X, Y, Vx, Vy);
     hold off
 end
 
