@@ -1,9 +1,4 @@
 function [c, r] = HarrisCornerDetector (image, sigma, window_size, threshold)
-% image = im2double(imread(image_path));
-% % convert image to gray if image is in rgb
-% if(size(image, 3) == 3)
-%     image = rgb2gray(image);
-% end
 % %computing Gaussian function implemented in previous assignment
 G = gaussian(sigma);
 % create the gaussian filters using 1st order derivatives
@@ -43,21 +38,12 @@ for i = 1:size(rowP,1)
         if windowY_Bottom > size(H,2)
         windowY_Bottom = size(H,2); 
         end
-window = H(windowX_Left:windowX_Right,windowY_Top:windowY_Bottom);
-%finding the corner points which are local maxima of H
+    window = H(windowX_Left:windowX_Right,windowY_Top:windowY_Bottom);
+    %finding the corner points which are local maxima of H
     if H(rowP(i),columnP(i)) == max(max(window))
         r = [r rowP(i)];
         c = [c columnP(i)];
     end
 end
-% 
-% %image derivatives considering Ix and Iy
-% figure('name','image derivative Ix'); imshow(Ix,[]);
-% figure('name','image derivative Iy'); imshow(Iy,[]);
-% %image with the plotted corner points
-% figure('name','Plotting Corner Points'); imshow(image); 
-% hold on; 
-%image containing plotted corner points
-
 end
 
