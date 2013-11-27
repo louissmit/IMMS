@@ -2,7 +2,7 @@ function [dx, dy] = pointFlow(frame1, frame2, x, y, regionSize)
 %POINTFLOW Summary of this function goes here
 %   Detailed explanation goes here
     [m, n] = size(frame1);
-    sigma = 0.7;
+    sigma = 3;
 
     %  [Gx,Gy] = imgradientxy(frame1);
     G = gaussian(sigma);
