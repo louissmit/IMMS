@@ -7,7 +7,7 @@ writerObj.FrameRate = 15;
 % all parameters
 optflow_window = 32;
 optflow_sigma = 0.4;
-harris_sigma = 0.7;
+harris_sigma = 0.9;
 harris_threshold = 0.0002;
 harris_window = 15;
 
@@ -41,7 +41,6 @@ for i = 1:length(imageNames)
     hold off;
     c = new_c;
     r = new_r;
-%     F(i) = getframe;
     writeVideo(writerObj,getframe);
     frame1 = frame2;
 
