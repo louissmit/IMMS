@@ -1,9 +1,7 @@
-function [dx, dy] = pointFlow(frame1, frame2, x, y, regionSize)
+function [dx, dy] = pointFlow(frame1, frame2, x, y, regionSize, sigma)
 %POINTFLOW Summary of this function goes here
 %   Detailed explanation goes here
     [m, n] = size(frame1);
-    sigma = 3;
-
     %  [Gx,Gy] = imgradientxy(frame1);
     G = gaussian(sigma);
     % create the gaussian filters using 1st order derivatives
@@ -12,6 +10,8 @@ function [dx, dy] = pointFlow(frame1, frame2, x, y, regionSize)
     Gx = conv2(frame1,Gx,'same');
     Gy = conv2(frame1,Gy,'same');
     
+    % extrude the window out of the gradient matrices
+    % if the x,y is near an edge, we decrease window size    
     h = regionSize/2;
     lh = h;
     rh = h;
