@@ -1,6 +1,6 @@
 workingDir = 'pingpong';
 imageNames = dir(fullfile(workingDir,'*.jpeg'));
-imageNames = {imageNames.name}';
+imageNames = {imageNames.name};
 
 frame1 = rgb2gray(im2double(imread(fullfile(workingDir,imageNames{1}))));
 [m,n] = size(frame1);
@@ -24,8 +24,8 @@ for i = 1:length(imageNames)
     for j = 1:length(c)
         if(c(j) < n & r(j) < m)
             [dx, dy] = pointFlow(frame1, frame2, c(j), r(j), 16);
-            new_c(j) = c(j) + round(dy);
-            new_r(j) = r(j) + round(dx);
+            new_c(j) = c(j) + round(dx);
+            new_r(j) = r(j) + round(dy);
 
         end
     end
