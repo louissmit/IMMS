@@ -1,14 +1,14 @@
-workingDir = 'pingpong';
-imageNames = dir(fullfile(workingDir,'*.jpeg'));
+workingDir = 'person_toy';
+imageNames = dir(fullfile(workingDir,'*.jpg'));
 imageNames = {imageNames.name};
 writerObj = VideoWriter(workingDir,'MPEG-4')
 writerObj.FrameRate = 15;
 
 % all parameters
-optflow_window = 32;
-optflow_sigma = 0.4;
+optflow_window = 7;
+optflow_sigma = 0.9;
 harris_sigma = 0.9;
-harris_threshold = 0.0002;
+harris_threshold = 0.00005;
 harris_window = 15;
 
 frame1 = rgb2gray(im2double(imread(fullfile(workingDir,imageNames{1}))));

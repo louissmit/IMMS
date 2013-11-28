@@ -1,5 +1,5 @@
 % show sphere optical flow
-regionSize = 10;
+regionSize = 20;
 figure
 frame1 = rgb2gray(im2double(imread('sphere1.ppm')));
 frame2 = rgb2gray(im2double(imread('sphere2.ppm')));

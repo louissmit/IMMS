@@ -7,12 +7,17 @@ function [dx, dy] = pointFlow(frame1, frame2, x, y, regionSize, sigma)
     % create the gaussian filters using 1st order derivatives
     Gx = gaussianDer(G,sigma);
     Gy = transpose(Gx);
-    Gx = conv2(frame1,Gx,'same');
-    Gy = conv2(frame1,Gy,'same');
+    Gx1 = conv2(frame1,Gx,'same');
+    Gy1 = conv2(frame1,Gy,'same');
+    Gx2 = conv2(frame2,Gx,'same');
+    Gy2 = conv2(frame2,Gy,'same');
+    
+    Gx = (Gx1 + Gx2) / 2;
+    Gy = (Gy1 + Gy2) / 2;
     
     % extrude the window out of the gradient matrices
     % if the x,y is near an edge, we decrease window size    
-    h = regionSize/2;
+    h = (regionSize-1) / 2;
     lh = h;
     rh = h;
     uh = h;
@@ -38,9 +43,8 @@ function [dx, dy] = pointFlow(frame1, frame2, x, y, regionSize, sigma)
     A = [reshape(Ix, vSize, 1), reshape(Iy, vSize, 1)];
     b = -reshape(It,vSize,1);
     v = linsolve(A,b);
-    k = 1;
-    dx = k * v(1);
-    dy = k * v(2);
+    dx = v(1);
+    dy = v(2);
 
 end
 
