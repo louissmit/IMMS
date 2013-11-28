@@ -1,8 +1,9 @@
-% show harris corners
+% harris parameters
 frame1 = rgb2gray(im2double(imread('building.jpg')));
 harris_sigma = 1.2;
 harris_threshold = 0.00001;
 harris_window = 15;
+% show harris corners
 figure;
 imshow(frame1);
 hold on;

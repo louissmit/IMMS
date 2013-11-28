@@ -34,9 +34,11 @@ function [dx, dy] = pointFlow(frame1, frame2, x, y, regionSize, sigma)
     % extrude the window out of the gradient matrices
     Ix = Gx((y-lowerBound):(y+upperBound),(x-leftBound):(x+rightBound));
     Iy = Gy((y-lowerBound):(y+upperBound),(x-leftBound):(x+rightBound));
+    % get frame difference and extrude window
     It = frame2 - frame1;
     It = It((y-lowerBound):(y+upperBound),(x-leftBound):(x+rightBound));
-    
+
+    % get flattened size of matrices
     [im, in] = size(Ix);
     vSize = im*in;
     % calculate velocity
