@@ -1,34 +1,19 @@
-function [Vx, Vy] = opticalFlow(frame1, frame2, regionSize)
+function [X,Y,Vx,Vy] = opticalFlow(frame1, frame2, regionSize, sigma)
+    %get all points for regionSize by regionSize regions without overlapping
+    borderOffset = ((regionSize-1)/2)+1;
+    X = borderOffset:regionSize:size(frame1,1)-borderOffset;
+    Y = borderOffset:regionSize:size(frame1,2)-borderOffset;
     
-    [m, n] = size(frame1);
-    gridSizeX = m / regionSize;
-    gridSizeY = n / regionSize;
-    
-    
-    % calculate difference and gradient
-    diff = frame2 - frame1;
-    [Gx,Gy] = imgradientxy(frame1);
 
-    % divide gradients into regions
-    dividerX = repmat([regionSize], gridSizeX, 1);
-    dividerY = repmat([regionSize], gridSizeY, 1);
-    
-    Ix = mat2cell(Gx, dividerX, dividerY);
-    Iy = mat2cell(Gy, dividerX, dividerY);
-    It = mat2cell(diff, dividerX, dividerY);
-
-    A = zeros(regionSize * regionSize, 2);
-    Vx = zeros(gridSizeX, gridSizeY);
-    Vy = zeros(gridSizeX, gridSizeY);
-    
-    % calculate velocity   
-    for i = 1:gridSizeX
-        for j = 1:gridSizeY
-            A = [reshape(cell2mat(Ix(i,j)), regionSize * regionSize, 1), reshape(cell2mat(Iy(i,j)), regionSize * regionSize, 1)];
-            b = -reshape(cell2mat(It(i,j)),regionSize * regionSize,1);
-            v = linsolve(A,b);
-            Vx(i,j) = v(1);
-            Vy(i,j) = v(2);
+    %get flow for each point
+    Vx = zeros(size(X), size(Y));
+    Vy = zeros(size(X), size(Y));
+    size(X)
+    for i = 1:size(X,2)
+        for j = 1:size(Y,2)
+            [dx, dy] = pointFlow(frame1, frame2, X(i), Y(j), regionSize, sigma);
+            Vx(i,j) = dx;
+            Vy(i,j) = dy;
         end
     end
 end

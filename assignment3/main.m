@@ -5,10 +5,10 @@ writerObj = VideoWriter(workingDir,'MPEG-4')
 writerObj.FrameRate = 15;
 
 % all parameters
-optflow_window = 7;
-optflow_sigma = 0.9;
+optflow_window = 15;
+optflow_sigma = 0.8;
 harris_sigma = 0.9;
-harris_threshold = 0.00005;
+harris_threshold = 0.00002;
 harris_window = 15;
 
 frame1 = rgb2gray(im2double(imread(fullfile(workingDir,imageNames{1}))));
