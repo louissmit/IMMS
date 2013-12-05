@@ -6,7 +6,7 @@ function [ bestPm, X1, Y1, matches1, matches2] = RANSAC( image1, image2 )
 
     [matches] = vl_ubcmatch(ldesc, rdesc);
 
-    P = 3;
+    P = 4;
     N = 5000;
 
     L = frames1(1:2,:);
