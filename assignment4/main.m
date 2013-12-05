@@ -1,53 +1,88 @@
-image1 = rgb2gray(im2double(imread('left.jpg')));
-image2 = rgb2gray(im2double(imread('right.jpg')));
-[lframes,ldesc] = vl_sift(single(image1));
-[rframes,rdesc] = vl_sift(single(image2));
+image1 = im2double(imread('boat/img1.pgm'));
+image2 = im2double(imread('boat/img3.pgm'));
+[frames1,ldesc] = vl_sift(single(image1));
+[frames2,rdesc] = vl_sift(single(image2));
 
 [matches] = vl_ubcmatch(ldesc, rdesc);
 
-P = 150;
+P = 3;
+N = 100;
+
+L = frames1(1:2,:);
+X1 = L(1,:);
+Y1 = L(2,:);
+matches1 = matches(1,:);
+
+R = frames2(1:2,:);
+X2 = R(1,:);
+Y2 = R(2,:);
+matches2 = matches(2,:);
+
+randomX1 = [];
+randomY1 = [];
+randomX2 = [];
+randomY2 = [];
+pm = zeros(6,1);
+
+bestCount = 0;
+bestPm = [];
 r = randi([1 size(matches,2)],1,P);
-N = 1;
-X = [];
-Y = [];
-avgPm = zeros(6,1);
-for p = 1:P
-    i = r(p);
-    index = matches(:,i);
-    lframe = lframes(:,index(1));
-    rframe = rframes(:,index(2));
-    x = lframe(1);
-    X(i) = x;
-    y = lframe(2);
-    Y(i) = y;
-    rx = rframe(1);
-    ry = rframe(2);;
-    b = [rx; ry];
-    A = [x y 0 0 1 0;
-         0 0 x y 0 1];
-    pm = linsolve(A,b);
-    avgPm = avgPm + pm;
+for n = 1:N
+    for p = 1:P
+        i = r(p);
+
+        randomX1(p) = X1(matches1(i));
+        randomY1(p) = Y1(matches1(i));
+        
+        randomX2(p) = X2(matches2(i));
+        randomY2(p) = Y2(matches2(i));
+
+    end
+    A = zeros(2*P, 6);
+    A(1:2:2*P,1) = randomX1;
+    A(1:2:2*P,2) = randomY1;
+    A(2:2:2*P,3) = randomX1;
+    A(2:2:2*P,4) = randomY1;
+    A(1:2:2*P,5) = 1;
+    A(2:2:2*P,6) = 1;
+
+    b = zeros(2*P,1);
+    b(1:2:2*P) = randomX2;
+    b(2:2:2*P) = randomY2;
+
+    pm = pinv(A)*b;
+
+    pX = [];
+    pY = [];
+    inlierCount = 0;
+    for i = 1:size(matches,2)
+        x = X1(matches1(i));
+        y = Y1(matches1(i));
+        A = [x y 0 0 1 0;
+             0 0 x y 0 1];
+        xPrime = A * pm;
+        distance = norm(xPrime - [X2(matches2(i)); Y2(matches2(i))]);
+        if(distance < 10)
+            inlierCount = inlierCount + 1;
+        end
+    end
+    if(inlierCount > bestCount)
+        bestPm = pm;
+    end
 end
-V = lframes(1:2,:);
-X = V(1,:);
-Y = V(2,:);
-pX = [];
-pY = [];
-avgPm = avgPm / P;
+
 for i = 1:size(matches,2)
-    x = X(i);
-    y = Y(i);
+    x = X1(matches1(i));
+    y = Y1(matches1(i));
     A = [x y 0 0 1 0;
          0 0 x y 0 1];
-    p = A * avgPm;
-    pX(i) = p(1);
-    pY(i) = p(2);
+    xPrime = A * bestPm;
+    pX(i) = xPrime(1);
+    pY(i) = xPrime(2);
 end
-size(pX)
-imshow(image1);
-hold on;
-scatter(X,Y,40,'MarkerEdgeColor','b','MarkerFaceColor','c','LineWidth',1.5);
-scatter(pX,pY,40,'MarkerEdgeColor','r','MarkerFaceColor','c','LineWidth',1.5);
-hold off;
 figure
-imshow(image2);
+imshow([image1 image2], []);
+hold on;
+scatter(X1,Y1,40,'MarkerEdgeColor','b','MarkerFaceColor','c','LineWidth',1.5);
+scatter(pX + size(image1, 2), pY, 40,'MarkerEdgeColor','r','MarkerFaceColor','c','LineWidth',1.5);
+hold off;
