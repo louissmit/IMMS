@@ -1,4 +1,4 @@
-function [ bestPm, X1, Y1] = RANSAC( image1, image2 )
+function [ bestPm, X1, Y1, matches1, matches2] = RANSAC( image1, image2 )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
     [frames1,ldesc] = vl_sift(single(image1));
@@ -6,8 +6,8 @@ function [ bestPm, X1, Y1] = RANSAC( image1, image2 )
 
     [matches] = vl_ubcmatch(ldesc, rdesc);
 
-    P = 5;
-    N = 100;
+    P = 3;
+    N = 5000;
 
     L = frames1(1:2,:);
     X1 = L(1,:);
