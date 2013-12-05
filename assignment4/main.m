@@ -6,7 +6,7 @@ image2 = im2double(imread('boat/img3.pgm'));
 [matches] = vl_ubcmatch(ldesc, rdesc);
 
 P = 3;
-N = 100;
+N = 10;
 
 L = frames1(1:2,:);
 X1 = L(1,:);
@@ -86,3 +86,10 @@ hold on;
 scatter(X1,Y1,40,'MarkerEdgeColor','b','MarkerFaceColor','c','LineWidth',1.5);
 scatter(pX + size(image1, 2), pY, 40,'MarkerEdgeColor','r','MarkerFaceColor','c','LineWidth',1.5);
 hold off;
+figure
+M = transpose(reshape(bestPm(1:4),2,2));
+t = bestPm(5:6);
+tForm = maketform('affine',[M';t']);
+
+transformedimage = imtransform(image1,tForm);
+imshow(transformedimage);
