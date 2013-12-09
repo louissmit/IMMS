@@ -1,6 +1,5 @@
 function [ stitchedImage ] = makeStitching( image1, image2 )
-%MAKESTITCHING Summary of this function goes here
-%   Detailed explanation goes here
+
     [bestPm, X1, Y1] = RANSAC(image2, image1);
     
     M = transpose(reshape(bestPm(1:4),2,2));
