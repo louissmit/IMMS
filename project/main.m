@@ -1,20 +1,9 @@
 workingDir = 'data/';
 locations = {'airplanes_', 'cars_','faces_', 'motorbikes_'};
-nrOfImages = 5;
-data = [];
-for l = 1:length(locations)
-    directory = strcat(workingDir, locations{l}, 'train');
-    imageNames = dir(fullfile(directory,'*.jpg'));
-    imageNames = {imageNames.name};
-    for i = 1:nrOfImages
-        image = rgb2gray(im2double(imread(fullfile(directory,imageNames{i}))));
-        [frames, desc] = vl_sift(single(image));
-        data = horzcat(data, desc); 
-    end
-end
-
+nrOfImages = 100;
 k = 400;
-[centers, assignments] = vl_ikmeans(data, k);
+% writeClusters(workingDir, locations, nrOfImages, k, 'clusters.mat');
+load('clusters.mat');
 
 for l = 1:length(locations)
     directory = strcat(workingDir, locations{l}, 'test');
