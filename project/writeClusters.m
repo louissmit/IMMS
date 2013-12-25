@@ -1,6 +1,7 @@
-function [ centers, assigments ] = writeClusters(workingDir, locations,nrOfImages,k, filename)
+function [ centers, assigments ] = writeClusters(workingDir, locations, trainSetSize,k, filename)
 %WRITECLUSTERS Summary of this function goes here
 %   Detailed explanation goes here
+    nrOfImages = trainSetSize / 4;
     data = [];
     for l = 1:length(locations)
         directory = strcat(workingDir, locations{l}, 'train');
@@ -16,7 +17,7 @@ function [ centers, assigments ] = writeClusters(workingDir, locations,nrOfImage
         end
     end
 
-    [centers, assignments] = vl_ikmeans(data, k);
-    save(filename, 'centers', 'assignments');
+    [centers, ~] = vl_ikmeans(data, k);
+    save(filename, 'centers');
 end
 

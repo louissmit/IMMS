@@ -1,34 +1,29 @@
-function [ model ] = trainSVM( workingDir, locations, centers, k)
+function [ model ] = trainSVM(workingDir, locations,sift_type, dense, centers, k, setSize, positiveSet)
 %TRAINSVM Summary of this function goes here
 %   Detailed explanation goes here
-    setSize = 100;
-    nrOfTrainImages = setSize * 4;
-    trainData = zeros(nrOfTrainImages,400);
-    trainLabels = zeros(nrOfTrainImages,1);
-    trainLabels(1:setSize) = 1;
+    nrOfTrainImages = setSize / 4;
+    trainData = zeros(setSize, k);
+    trainLabels = zeros(setSize,1);
+
+    % assign positve labels     
+    trainLabels(((positiveSet-1)*nrOfTrainImages+1):(nrOfTrainImages*positiveSet)) = 1;
 
     x = 1;
     for l = 1:length(locations)
-        for j = 1:setSize
-            directory = strcat(workingDir, locations{l}, 'train');
-            imageNames = dir(fullfile(directory,'*.jpg'));
-            imageNames = {imageNames.name};
-            image = im2double(imread(fullfile(directory,imageNames{j})));
-            if(size(image,3) == 3)
-                image = rgb2gray(image);
-            end
-            [frames, desc] = vl_sift(single(image));
+        [directory, imageNames] = getImageNames( workingDir, locations{l}, 'train');
+        n = size(imageNames,2);
+        for j = (n-nrOfTrainImages+1):n
+            desc = getSift(directory, imageNames, j, sift_type, logical(dense));
             indices = vl_ikmeanspush(desc,centers);
             H = vl_ikmeanshist(k,indices);
-            trainData(x,:) = reshape(H, 1, 400);
+            trainData(x,:) = reshape(H, 1, k);
             x = x+1;
-    %         figure;
-    %         bar(H);
         end
     end
 
     model = svmtrain(trainLabels, trainData);
-    save('model.mat', 'model');
+    mkdir(strcat('models/', num2str(positiveSet)));
+    save(strcat('models/',num2str(positiveSet),'/setSize',num2str(setSize), 'k',num2str(k),'sift',sift_type, 'dense', num2str(dense), '.mat'), 'model');
 
 end
 

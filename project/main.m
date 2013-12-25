@@ -1,32 +1,22 @@
 workingDir = 'data/';
 locations = {'airplanes_', 'cars_','faces_', 'motorbikes_'};
-nrOfImages = 100;
+
 k = 400;
-% writeClusters(workingDir, locations, nrOfImages, k, 'clusters.mat');
+kernel = '';
+sift_type = 'grey_scale';%['grey_scale' , 'rgb', 'opponent'];
+dense = 0;%[true, false];
+trainSetSize = [200, 400, 800, 1600];
+% writeClusters(workingDir, locations, trainSetSize, k, 'clusters.mat');
 load('clusters.mat');
 
-setSize = 100;
-nrOfTrainImages = 200;
-testData = zeros(nrOfTrainImages,400);
-trainLabels = zeros(nrOfTrainImages,1);
-trainLabels(1:50) = 1;
 
-x = 1;
-for l = 1:length(locations)
-    for j = 1:50
-        directory = strcat(workingDir, locations{l}, 'test');
-        imageNames = dir(fullfile(directory,'*.jpg'));
-        imageNames = {imageNames.name};
-        image = im2double(imread(fullfile(directory,imageNames{j})));
-        if(size(image,3) == 3)
-            image = rgb2gray(image);
-        end
-        [frames, desc] = vl_sift(single(image));
-        indices = vl_ikmeanspush(desc,centers);
-        H = vl_ikmeanshist(k,indices);
-        testData(x,:) = reshape(H, 1, 400);
-        x = x+1;
+for positiveSet = 1:4
+    for setSize = trainSetSize
+        trainSVM( workingDir, locations,sift_type, dense, centers, k, setSize, positiveSet);
     end
 end
-load('model.mat');
-[predict_label, accuracy, prob_values] = svmpredict(trainLabels, testData, model);
+
+% load(strcat('models/',num2str(positiveSet),'/setSize',num2str(trainSetSize), 'k',num2str(k),'sift',sift_type, 'dense', num2str(dense), '.mat'), 'model');
+
+% results = runClassifier(workingDir, locations,sift_type, dense, centers, k, model, positiveSet);
+
