@@ -1,22 +1,25 @@
 workingDir = 'data/';
 locations = {'airplanes_', 'cars_','faces_', 'motorbikes_'};
 
-k = 400;
-kernel = '';
-sift_type = 'grey_scale';%['grey_scale' , 'rgb', 'opponent'];
-dense = 0;%[true, false];
-trainSetSize = [200, 400, 800, 1600];
-% writeClusters(workingDir, locations, trainSetSize, k, 'clusters.mat');
-load('clusters.mat');
+params.k = 400;
+params.kernel = '';
+params.sift_type = 'grey_scale';%['grey_scale' , 'rgb', 'opponent'];
+params.dense = 0;%[true, false];
+params.setSize = 1000;
+
+[trainingSet, testSet] = loadData(workingDir, locations, params);
+
+centers = loadCodebook(trainingSet, params);
+% load('clusters.mat');
+
+trainSetSize = [12];%[200, 400, 800, 1600];
+
 
 
 for positiveSet = 1:4
     for setSize = trainSetSize
-        trainSVM( workingDir, locations,sift_type, dense, centers, k, setSize, positiveSet);
+        params.setSize = setSize;
+        model = getModel(trainingSet, centers, positiveSet, params);
+        results = runClassifier(workingDir, locations, centers, model, positiveSet, params);
     end
 end
-
-% load(strcat('models/',num2str(positiveSet),'/setSize',num2str(trainSetSize), 'k',num2str(k),'sift',sift_type, 'dense', num2str(dense), '.mat'), 'model');
-
-% results = runClassifier(workingDir, locations,sift_type, dense, centers, k, model, positiveSet);
-

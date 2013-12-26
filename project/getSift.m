@@ -1,7 +1,7 @@
-function [ result ] = getSift(directory, imageNames, image_index, sift_type, dense)
+function [ result ] = getSift(directory, imageName, sift_type, dense)
 %GETIMAGE Summary of this function goes here
 %   Detailed explanation goes here;
-    image = single(im2double(imread(fullfile(directory,imageNames{image_index}))));
+    image = single(im2double(imread(fullfile(directory,imageName))));
     result = [];
 
     if(size(image,3) == 3)
@@ -30,7 +30,7 @@ function [ result ] = getSift(directory, imageNames, image_index, sift_type, den
             result = [R_desc, G_desc, B_desc];
             
         case 'opponent'
-            [O1,O2,O3] = getOpponent(R,G,B)
+            [O1,O2,O3] = getOpponent(R,G,B);
             
             O1_desc = getDescriptors(O1, dense);
             O2_desc = getDescriptors(O2, dense);
