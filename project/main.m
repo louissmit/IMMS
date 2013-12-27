@@ -14,14 +14,14 @@ params.codeSetSize = 400;
 
 trainSetSizes = [600];%[200, 400, 800, 1600];
 params.kernel = '';
-Ks = [800, 1600];%, 2000 ,4000];
-for k = Ks
-    params.k = k;
-    runExperiment(trainSetSizes, trainingSet, testSet, params);
-end
-params.k = 400;
+% Ks = [800, 1600];%, 2000 ,4000];
+% for k = Ks
+%     params.k = k;
+%     runExperiment(trainSetSizes, trainingSet, testSet, params);
+% end
+% params.k = 400;
 
-sift_types = ['grey_scale' , 'rgb', 'opponent'];
+sift_types = ['rgb', 'opponent'];
 for sift_type = sift_types
     params.sift_type = sift_type;
     runExperiment(trainSetSizes, trainingSet, testSet, params);
