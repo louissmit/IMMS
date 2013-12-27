@@ -2,24 +2,31 @@ workingDir = 'data/';
 locations = {'airplanes_', 'cars_','faces_', 'motorbikes_'};
 
 params.k = 400;
-params.kernel = '';
-params.sift_type = 'grey_scale';%['grey_scale' , 'rgb', 'opponent'];
+params.sift_type = 'grey_scale';
 params.dense = 0;%[true, false];
-params.setSize = 1000;
+params.codeSetSize = 400;
 
 [trainingSet, testSet] = loadData(workingDir, locations, params);
 
-centers = loadCodebook(trainingSet, params);
-% load('clusters.mat');
 
-trainSetSize = [12];%[200, 400, 800, 1600];
+% S = load('clusters.mat');
+% codebook = S.centers;
 
-
-
-for positiveSet = 1:4
-    for setSize = trainSetSize
-        params.setSize = setSize;
-        model = getModel(trainingSet, centers, positiveSet, params);
-        results = runClassifier(workingDir, locations, centers, model, positiveSet, params);
-    end
+trainSetSizes = [600];%[200, 400, 800, 1600];
+params.kernel = '';
+Ks = [800, 1600, 2000 ,4000];
+for k = Ks
+    params.k = k;
+    runExperiment(trainSetSizes, trainingSet, testSet, params);
 end
+params.k = 400;
+
+sift_types = ['grey_scale' , 'rgb', 'opponent'];
+for sift_type = sift_types
+    params.sift_type = sift_type;
+    runExperiment(trainSetSizes, trainingSet, testSet, params);
+end
+params.sift_type = 'grey_scale';
+
+
+
