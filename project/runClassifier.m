@@ -4,7 +4,7 @@ function result = runClassifier(testSet, model, codebook, positiveSet, params)
 
     nrOfTestImages = params.setSize / length(testSet.class);
     testData = zeros(params.setSize, params.k);
-    testLabels = zeros(params.setSize,1);
+    testLabels = -1 * ones(params.setSize,1);
 
     % assign positve labels     
     testLabels(((positiveSet-1)*nrOfTestImages+1):(nrOfTestImages*positiveSet)) = 1;

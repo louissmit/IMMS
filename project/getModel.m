@@ -6,7 +6,7 @@ function model = getModel(trainingSet, codebook, positiveSet, params);
     if ~exist(path,'file')
         nrOfTrainImages = params.setSize / length(trainingSet.class);
         trainData = zeros(params.setSize, params.k);
-        trainLabels = zeros(params.setSize,1);
+        trainLabels = -1 * ones(params.setSize,1);
 
         % assign positve labels     
         trainLabels(((positiveSet-1)*nrOfTrainImages+1):(nrOfTrainImages*positiveSet)) = 1;
