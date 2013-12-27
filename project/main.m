@@ -1,6 +1,8 @@
 workingDir = 'data/';
 locations = {'airplanes_', 'cars_','faces_', 'motorbikes_'};
 
+addpath('libsvm-3.17/matlab');
+
 params.k = 400;
 params.sift_type = 'grey_scale';
 params.dense = 0;%[true, false];
