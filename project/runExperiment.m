@@ -1,16 +1,11 @@
-function result = runExperiment(trainSetSizes, trainingSet, testSet, params)
+function [results, map] = runExperiment(trainingSet, testSet, params)
     codebook = loadCodebook(trainingSet, params);
     for positiveSet = 1:4
-        for setSize = trainSetSizes
-            params.setSize = setSize;
-            model = getModel(trainingSet, codebook, positiveSet, params);
-            params.setSize = 200;
-            result = runClassifier(testSet, model, codebook, positiveSet, params);
-            results(positiveSet).result = result;
-    %         disp(sum(result(1:50,1)) / 50)
-        end
+        model = getModel(trainingSet, codebook, positiveSet, params);
+        result = runClassifier(testSet, model, codebook, positiveSet, params);
+        results(positiveSet).result = result;
     end
-    getMAP(results)
+    map = getMAP(results);
 end
 
 function map = getMAP(results)

@@ -5,16 +5,19 @@ function [trainingSet, testSet ] = loadData(workingDir, locations, params)
     path = strcat('descriptors/', params.sift_type, num2str(params.dense), '.mat');
 
     if ~exist(path, 'file')
-        [trainingSet, testSet ] = compileData(workingDir, locations, params)
+        [trainingSet, testSet ] = compileData(workingDir, locations, params);
         save(path, 'trainingSet', 'testSet');
     else
+        disp('loading data...');
         load(path, 'trainingSet', 'testSet');
     end
+    disp('data loaded');
 
 end
 
 function [trainingSet, testSet ] = compileData(workingDir, locations, params)
-
+    disp('compiling data...');
+    % load training data
     for l = 1:length(locations)
         [directory, imageNames] = getImageNames( workingDir, locations{l}, 'train');
         for j = 1:length(imageNames)
@@ -23,6 +26,7 @@ function [trainingSet, testSet ] = compileData(workingDir, locations, params)
         end
     end
     
+    % load test data
     for l = 1:length(locations)
         [directory, imageNames] = getImageNames( workingDir, locations{l}, 'test');
         for j = 1:length(imageNames)
